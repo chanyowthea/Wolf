@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum EAnimaStatus
+{
+    Patrol, 
+    Chase, 
+    Attack, 
+}
+
 public class Animal : Creature
 {
     #region Main
@@ -14,6 +21,11 @@ public class Animal : Creature
     void Update()
     {
 
+    }
+
+    public void Set(Color color)
+    {
+        GetComponent<Renderer>().material.color = color; 
     }
     #endregion
 
@@ -32,12 +44,15 @@ public class Animal : Creature
 
     #region Move
     [Header("Animal")]
-    [SerializeField] protected int moveSpeed; 
+    [SerializeField] protected float moveSpeed = 0.2f; 
     [SerializeField] protected int visualField; 
     [SerializeField] protected int huntingField; 
+    [SerializeField] protected float haltDistance; 
+    [SerializeField] protected float changeDirectionTime = 3f; 
 
     IEnumerator moveUpdate; 
     Vector3 moveDestination; 
+
 
     void MoveInit()
     {
@@ -46,7 +61,9 @@ public class Animal : Creature
 
     public virtual void Move(Vector3 destination)
     {
+        destination.y += transform.GetComponent<Renderer>().bounds.center.y; 
         moveDestination = destination; 
+        StopCoroutine(moveUpdate); 
         StartCoroutine(moveUpdate); 
     }
 
@@ -61,8 +78,12 @@ public class Animal : Creature
         {
             yield return null; 
             transform.position += (moveDestination - transform.position).normalized * Time.deltaTime * moveSpeed; 
+            transform.LookAt(moveDestination); 
+            if(Mathf.Abs(Vector3.Distance(transform.position, moveDestination)) < haltDistance)
+            {
+                StopCoroutine(moveUpdate); 
+            }
         }
-        yield return null; 
     }
     #endregion
 

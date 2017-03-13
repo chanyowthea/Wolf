@@ -13,6 +13,7 @@ public class GameData : MonoBehaviour
     }
 
     [SerializeField] public Wolf _Wolf; 
+    [SerializeField] public Sheep _Sheep; 
 
     void Awake()
     {

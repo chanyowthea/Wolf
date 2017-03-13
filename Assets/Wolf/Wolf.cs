@@ -10,8 +10,7 @@ public class Wolf : Animal
 
     protected override void Init()
     {
-        base.Init();
-
+        base.Init(); 
     }
 	
     void Update()
